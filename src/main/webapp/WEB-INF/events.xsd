@@ -1,0 +1,46 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://github.com/no0ker/MyExampleVer2Application"
+           xmlns:tns="https://github.com/no0ker/MyExampleVer2Application"
+           elementFormDefault="qualified">
+
+    <xs:element name="setEventRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="things" type="tns:thing" minOccurs="0" maxOccurs="10"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="setEventResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="statusContainer" type="tns:statusContainer" minOccurs="0" maxOccurs="10"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="statusContainer">
+        <xs:sequence>
+            <xs:element name="thing" type="tns:thing" minOccurs="1"/>
+            <xs:element name="status" type="tns:status" minOccurs="1"/>
+            <xs:element name="error" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="status">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="succesfull"/>
+            <xs:enumeration value="fail"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="thing">
+        <xs:sequence>
+            <xs:element name="value1" type="xs:string" minOccurs="1"/>
+            <xs:element name="value2" type="xs:integer" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
