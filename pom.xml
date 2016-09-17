@@ -31,7 +31,6 @@
             <artifactId>spring-ws-core</artifactId>
             <version>2.3.0.RELEASE</version>
         </dependency>
-java.lang.UnsupportedClassVersionError: Class org.hibernate.SessionFactory has unsupported major or minor version numbers, which are greater than those found in the Java Runtime Environment version 1.7.0_80
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
