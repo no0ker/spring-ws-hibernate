@@ -13,19 +13,19 @@ public class EndpointConfig
     private static final String NAMESPACE_URI = "https://github.com/no0ker/MyExampleVer2Application";
 
 //    private DbHelper dbHelper;
-//    private SomethingDAO somethingDAO;
+//    private EventDAO eventDAO;
 
 //    @Autowired
-//    public EndpointConfig(DbHelper dbHelper, SomethingDAO somethingDAO)
+//    public EndpointConfig(EventDAO eventDAO)
 //    {
-//        this.dbHelper = dbHelper;
-//        this.somethingDAO = somethingDAO;
+//        this.eventDAO = eventDAO;
 //    }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "setEventRequest")
     @ResponsePayload
     public SetEventResponse eventsProcessor(@RequestPayload SetEventRequest request)
     {
+
         SetEventResponse response = new SetEventResponse();
         response.setName(request.getName());
 //
