@@ -1,7 +1,5 @@
 package com.no0ker.model;
 
-//import javax.persistence.*;
-
 import javax.persistence.*;
 
 @Entity
@@ -14,11 +12,16 @@ public class Event {
     @Column
     private String name;
 
+    @Column
+    private String comment;
+
+
     public Event() {
     }
 
-    public Event(String name) {
+    public Event(String name, String comment) {
         this.name = name;
+        this.comment = comment;
     }
 
     public long getId() {
@@ -35,5 +38,17 @@ public class Event {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

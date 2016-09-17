@@ -10,8 +10,7 @@ public class EventDAO {
     @Autowired
     SessionFactory sessionFactory;
 
-    public void test(Event event){
+    public void save(Event event){
         sessionFactory.openSession().save(event);
     }
-
 }
