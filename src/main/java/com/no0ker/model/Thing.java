@@ -1,5 +1,7 @@
 package com.no0ker.model;
 
+import com.sun.istack.internal.NotNull;
+
 import javax.persistence.*;
 import java.math.BigInteger;
 
@@ -11,10 +13,10 @@ public class Thing {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "value1")
+    @Column(name = "value1", nullable = false)
     private String value1;
 
-    @Column(name = "value2")
+    @Column(name = "value2", nullable = false)
     private BigInteger value2;
 
     public Thing() {
