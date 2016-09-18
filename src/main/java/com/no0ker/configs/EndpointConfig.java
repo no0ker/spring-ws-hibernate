@@ -4,6 +4,7 @@ import com.no0ker.domain.SetEventRequest;
 import com.no0ker.domain.SetEventResponse;
 import com.no0ker.model.Event;
 import com.no0ker.model.EventDAO;
+import org.springframework.beans.ExtendedBeanInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -20,16 +21,14 @@ import javax.transaction.TransactionManager;
 public class EndpointConfig {
     private static final String NAMESPACE_URI = "https://github.com/no0ker/MyExampleVer2Application";
 
-    //    private DbHelper dbHelper;
-    @Autowired
+    private TransactionTemplate transactionTemplate;
     private EventDAO eventDAO;
 
     @Autowired
-    private HibernateTransactionManager transactionManager;
-
-//    public EndpointConfig(EventDAO eventDAO) {
-//        this.eventDAO = eventDAO;
-//    }
+    public EndpointConfig(EventDAO eventDAO, HibernateTransactionManager transactionManager) {
+        this.eventDAO = eventDAO;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+    }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "setEventRequest")
     @ResponsePayload
@@ -39,14 +38,24 @@ public class EndpointConfig {
         response.setName(request.getName());
         Event event = new Event();
         event.setName(request.getName());
+        event.setComment("c");
 
-        new TransactionTemplate(transactionManager).execute(new TransactionCallback<Object>() {
-            @Override
-            public Object doInTransaction(TransactionStatus transactionStatus) {
-                eventDAO.save(event);
-                return null;
-            }
-        });
+        Event event1 = new Event();
+        event1.setName(request.getName());
+        event1.setComment("c");
+
+        try {
+            transactionTemplate.execute(new TransactionCallback<Object>() {
+                @Override
+                public Object doInTransaction(TransactionStatus transactionStatus) {
+                    eventDAO.save(event);
+                    eventDAO.save(event1);
+                    return null;
+                }
+            });
+        }catch (Exception e){
+            response.setName(e.getClass().getName());
+        }
 //
 //        try{
 //            dbHelper.saveEvent(eventName);

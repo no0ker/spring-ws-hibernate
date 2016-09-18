@@ -1,18 +1,23 @@
 package com.no0ker.model;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "events")
+@Table(name = "events",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"name", "comment"}))
+
+
 public class Event {
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column
+    @Column(name = "name")
     private String name;
 
-    @Column
+    @Column(name = "comment")
     private String comment;
 
 
