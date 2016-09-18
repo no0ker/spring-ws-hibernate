@@ -4,4 +4,4 @@
 2. mvn install
 3. deploy sp-ws.war on Glassfish server
 4. wsdl - \<localhost\>/sp-ws/events/events.wsdl
-   ws - \<localhost\>/sp-ws/events
+   \n ws - \<localhost\>/sp-ws/events
