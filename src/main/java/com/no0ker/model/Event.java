@@ -3,12 +3,11 @@ package com.no0ker.model;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.util.Date;
+
 
 @Entity
-@Table(name = "events",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"name", "comment"}))
-
-
+@Table(name = "events")
 public class Event {
     @Id
     @GeneratedValue
@@ -17,16 +16,15 @@ public class Event {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "comment")
-    private String comment;
-
+    @Column(name = "date")
+    private Date date;
 
     public Event() {
     }
 
-    public Event(String name, String comment) {
+    public Event(String name, Date date) {
         this.name = name;
-        this.comment = comment;
+        this.date = date;
     }
 
     public long getId() {
@@ -49,11 +47,11 @@ public class Event {
         this.id = id;
     }
 
-    public String getComment() {
-        return comment;
+    public Date getDate() {
+        return date;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

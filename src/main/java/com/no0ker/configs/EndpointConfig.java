@@ -1,9 +1,9 @@
 package com.no0ker.configs;
 
-import com.no0ker.domain.SetEventRequest;
-import com.no0ker.domain.SetEventResponse;
+import com.no0ker.domain.*;
 import com.no0ker.model.Event;
 import com.no0ker.model.EventDAO;
+import com.no0ker.model.ThingDAO;
 import org.springframework.beans.ExtendedBeanInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -16,6 +16,7 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import javax.transaction.TransactionManager;
+import java.util.Date;
 
 @Endpoint
 public class EndpointConfig {
@@ -23,74 +24,55 @@ public class EndpointConfig {
 
     private TransactionTemplate transactionTemplate;
     private EventDAO eventDAO;
+    private ThingDAO thingDAO;
 
     @Autowired
-    public EndpointConfig(EventDAO eventDAO, HibernateTransactionManager transactionManager) {
+    public EndpointConfig(EventDAO eventDAO, HibernateTransactionManager transactionManager, ThingDAO thingDAO) {
         this.eventDAO = eventDAO;
+        this.thingDAO = thingDAO;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "setEventRequest")
     @ResponsePayload
     public SetEventResponse eventsProcessor(@RequestPayload SetEventRequest request) {
-
         SetEventResponse response = new SetEventResponse();
-        response.setName(request.getName());
-        Event event = new Event();
-        event.setName(request.getName());
-        event.setComment("c");
-
-        Event event1 = new Event();
-        event1.setName(request.getName());
-        event1.setComment("c");
 
         try {
             transactionTemplate.execute(new TransactionCallback<Object>() {
                 @Override
                 public Object doInTransaction(TransactionStatus transactionStatus) {
+                    Event event = new Event(request.getName(), new Date());
                     eventDAO.save(event);
-                    eventDAO.save(event1);
+                    response.setName(request.getName());
                     return null;
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             response.setName(e.getClass().getName());
         }
-//
-//        try{
-//            dbHelper.saveEvent(eventName);
-//        } catch (DataAccessException e){
-//            StatusContainer statusContainer = new StatusContainer();
-//            statusContainer.setStatus(Status.FAIL);
-//            statusContainer.setError(e.getClass().getName());
-//            response.getStatusContainer().add(statusContainer);
-//
-//            return response;
-//        }
-//
-//        for(Thing thing : request.getThings()){
-//            try
-//            {
-//                Something something = new Something();
-//                something.setValue1(thing.getValue1());
-//                something.setValue2(thing.getValue2());
-//
-//                somethingDAO.save(something);
-//
-//                StatusContainer statusContainer = new StatusContainer();
-//                statusContainer.setStatus(Status.SUCCESFULL);
-//                statusContainer.setThing(thing);
-//                response.getStatusContainer().add(statusContainer);
-//            }
-//            catch (DataAccessException e)
-//            {
-//                StatusContainer statusContainer = new StatusContainer();
-//                statusContainer.setStatus(Status.FAIL);
-//                statusContainer.setThing(thing);
-//                statusContainer.setError(e.getClass().getName());
-//                response.getStatusContainer().add(statusContainer);
-//            }
-//        }
+
+        for (Thing thing : request.getThings()) {
+            com.no0ker.model.Thing savedThing = new com.no0ker.model.Thing(thing.getValue1(), thing.getValue2());
+            StatusContainer statusContainer = new StatusContainer();
+            statusContainer.setThing(thing);
+
+            try {
+                transactionTemplate.execute(new TransactionCallback<Object>() {
+                    @Override
+                    public Object doInTransaction(TransactionStatus transactionStatus) {
+                        thingDAO.save(savedThing);
+                        statusContainer.setStatus(Status.SUCCESFULL);
+                        return null;
+                    }
+                });
+            } catch (Exception e) {
+                statusContainer.setStatus(Status.FAIL);
+                statusContainer.setError(e.getClass().getName());
+            }
+            response.getStatusContainer().add(statusContainer);
+        }
+
         return response;
     }
 }
